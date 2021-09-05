@@ -28,29 +28,29 @@ void sub_08030C94(u8 r7, struct Unk_020382A0_sub *r6)
         CpuCopy16(r6, &r4->unk4, sizeof(struct Unk_020382A0_sub));
 }
 
-// TODO: decompile more functions
-/*
-s32 sub_08030D4C(s32 sp)
+u32 sub_08030D4C(s32 sp)
 {
+    struct Unk_020382D0 *ip = &gUnk_020382D0;
     s32 sb = gUnk_020382D0.unk0 - 5;
     u16 r3;
     
     for (r3 = 0; r3 < gUnk_0203AD30; ++r3)
     {
-        for (gUnk_02038578[r3] = (gUnk_020382D0.unk2A4[r3] - 1) & 0xF;
-             gUnk_02038578[r3] != gUnk_020382D0.unk2A4[r3];
-             gUnk_02038578[r3] = (gUnk_02038578[r3] - 1) & 0xF)
+        for (ip->unk2A8[r3] = (ip->unk2A4[r3] - 1) & 0xF;
+             ip->unk2A8[r3] != ip->unk2A4[r3];
+             ip->unk2A8[r3] = (ip->unk2A8[r3] - 1) & 0xF)
         {
-            if (sb != gUnk_020382D0.unkA0[r3][gUnk_02038578[r3] * 2]) // maybe the type of the field is wrong
+            if (sb == ip->unkA0[r3][ip->unk2A8[r3] * 2])
                 break;
+            
         }
-        if (gUnk_02038578[r3] == gUnk_020382D0.unk2A4[r3])
+        if (ip->unk2A8[r3] == ip->unk2A4[r3])
         {
             gUnk_020382D0.unk4 |= 0x8000;
             gUnk_02038580 = 5;
             return 0;
         }
-        gUnk_020382D0.unk2A0[r3] = (gUnk_020382D0.unk2A4[r3] - gUnk_02038578[r3]) & 0xF;
+        ip->unk2A0[r3] = (ip->unk2A4[r3] - ip->unk2A8[r3]) & 0xF;
     }
     gUnk_020382D0.unk4 |= 2;
     if (sp)
@@ -58,6 +58,7 @@ s32 sub_08030D4C(s32 sp)
     return 1;
 }
 
+/*
 void sub_08030E44(void)
 {
     u16 i, r5;

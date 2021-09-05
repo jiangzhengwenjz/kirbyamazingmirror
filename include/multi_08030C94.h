@@ -40,6 +40,6 @@ void sub_08031C3C(void);
 void sub_08031C54(void);
 void sub_08031C70(u8);
 void sub_08031CD4(void);
-s32 sub_08030D4C(s32);
+u32 sub_08030D4C(s32);
 
 #endif // GUARD_MULTI_08030C94_H

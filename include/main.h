@@ -16,7 +16,7 @@ struct Unk_020382D0 {
     u32 unkA0[4][32]; // may be wrong type
     u8 unk2A0[4];
     u8 unk2A4[4];
-    u32 filler2A8;
+    u8 unk2A8[4];
     u8 unk2AC;
 };
 

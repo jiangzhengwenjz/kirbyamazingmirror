@@ -530,7 +530,6 @@ extern u8 gUnk_02022F40[];
 
 extern struct LevelInfo gCurLevelInfo[4];
 extern u16 gUnk_020382C8[5][4];
-extern u8 gUnk_02038578[];
 extern u32 gUnk_02038580;
 extern u16 gUnk_02038990[][2];
 extern u32 gUnk_0203AD10;
