@@ -657,9 +657,9 @@ static void sub_0801A618(struct Multi_08019F28 *r5)
         MultiSioStart();
         r5->unkA4 = 1;
     }
-    if (r5->unkA9 != gMultiSioRecv[0].unk2)
+    if (r5->unkA9 != gMultiSioRecv[0].unk2.byte[0])
     {
-        r5->unkA9 = gMultiSioRecv[0].unk2;
+        r5->unkA9 = gMultiSioRecv[0].unk2.byte[0];
         r5->unk9A = 0;
     }
 }
@@ -864,7 +864,7 @@ static void sub_0801AA58(struct Multi_08019F28 *r2)
     if (gMultiSioStatusFlags & MULTI_SIO_LD_ENABLE)
     {
         if (gMultiSioStatusFlags & MULTI_SIO_LD_SUCCESS)
-            ++gMultiSioSend.unk2;
+            ++gMultiSioSend.unk2.byte[0];
         r2->callback = sub_0801A618;
     }
     sub_0801A618(r2);

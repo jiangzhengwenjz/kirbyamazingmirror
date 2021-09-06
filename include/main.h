@@ -64,16 +64,18 @@ struct Unk_03006CB0 {
     u8 unk8;
 };
 
+union __attribute__((packed, aligned(2))) MultiSioData_2 {
+    u16 hword[6];
+    u8 byte[12];
+};
+
 struct MultiSioData {
     u8 unk0;
     u8 unk1;
-    u8 unk2;
-    u8 unk3; // combined field? 
-    struct Unk_020382A0_sub unk4;
-    u16 unkC;
+    union MultiSioData_2 unk2;
     u8 unkE;
     u32 unk10;
-}; /* size = 0x14 */
+}; /* size = MULTI_SIO_BLOCK_SIZE */
 
 extern struct Unk_020382D0 gUnk_020382D0;
 

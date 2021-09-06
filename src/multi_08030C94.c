@@ -58,54 +58,59 @@ u32 sub_08030D4C(s32 sp)
     return 1;
 }
 
-/*
 void sub_08030E44(void)
 {
+    struct Unk_020382D0 *r7 = &gUnk_020382D0;
     u16 i, r5;
+    struct Unk_020382D0_sub *r4;
+    struct MultiSioData *r6;
 
-    if (gUnk_020382D0.unk4 & 1 && !(gUnk_020382D0.unk4 & 4))
+    if (r7->unk4 & 1 && !(r7->unk4 & 4))
     {
+        r4 = &r7->unk20[r7->unk2AC];
         r5 = 0;
-        if (gUnk_020382D0.unk4 & 8)
+        if (r7->unk4 & 8)
         {
             r5 = gRngVal;
             for (i = 0; i < 4; ++i)
-                r5 += gUnk_02020F20[i * 0x6a] + (gUnk_02020F20 + 1)[i * 0x6a]; // type
+                r5 += gKirbys[i].base.base.x + gKirbys[i].base.base.y;
         }
-        gUnk_020382D0.unk20[gUnk_020382D0.unk2AC].unk0 = gUnk_020382D0.unk0;
-        gUnk_020382D0.unk20[gUnk_020382D0.unk2AC].unk4 = (gInput & 0x3ff) | ((r5 << 10) & 0xc00);
-        gMultiSioSend.unk0 = 0x20;
-        gMultiSioSend.unk1 = gUnk_020382D0.unk6;
-        gMultiSioSend.unk10 = gUnk_020382D0.unk20[gUnk_020382D0.unk2AC].unk0;
+        r4->unk0 = r7->unk0;
+        r4->unk4 = (gInput & 0x3FF) | ((r5 << 10) & 0xC00);
+        r6 = &gMultiSioSend;
+        r6->unk0 = 0x20;
+        r6->unk1 = gUnk_020382D0.unk6;
+        r6->unk10 = r4->unk0;
         for (r5 = 0; r5 < 6; ++r5)
-            ((u16 *)&gMultiSioSend + 1)[r5] = 0;
-        ((u16 *)&gMultiSioSend + 1)[0] |= gUnk_020382D0.unk20[gUnk_020382D0.unk2AC].unk4;
-        --r5;
-        r5 &= 0xF;
-        ((u16 *)&gMultiSioSend + 1)[0] |= gUnk_020382D0.unk20[r5].unk4 << 12;
-        ((u16 *)&gMultiSioSend + 1)[1] |= gUnk_020382D0.unk20[r5].unk4 >> 4;
-        --r5;
-        r5 &= 0xF;
-        ((u16 *)&gMultiSioSend + 1)[1] |= gUnk_020382D0.unk20[r5].unk4 << 8;
-        ((u16 *)&gMultiSioSend + 1)[2] |= gUnk_020382D0.unk20[r5].unk4 >> 8;
-        --r5;
-        r5 &= 0xF;
-        ((u16 *)&gMultiSioSend + 1)[2] |= gUnk_020382D0.unk20[r5].unk4 << 4;
-        --r5;
-        r5 &= 0xF;
-        ((u16 *)&gMultiSioSend + 1)[3] |= gUnk_020382D0.unk20[r5].unk4;
-        --r5;
-        r5 &= 0xF;
-        ((u16 *)&gMultiSioSend + 1)[3] |= gUnk_020382D0.unk20[r5].unk4 << 12;
-        ((u16 *)&gMultiSioSend + 1)[4] |= gUnk_020382D0.unk20[r5].unk4 >> 4;
-        --r5;
-        r5 &= 0xF;
-        ((u16 *)&gMultiSioSend + 1)[4] |= gUnk_020382D0.unk20[r5].unk4 << 8;
-        ((u16 *)&gMultiSioSend + 1)[5] |= gUnk_020382D0.unk20[r5].unk4 >> 8;
-        --r5;
-        r5 &= 0xF;
-        ((u16 *)&gMultiSioSend + 1)[5] |= gUnk_020382D0.unk20[r5].unk4 << 4;
-        gUnk_020382D0.unk2AC = (gUnk_020382D0.unk2AC + 1) & 0xF;
+            r6->unk2.hword[r5] = 0;
+        r5 = r7->unk2AC;
+        r4 = &r7->unk20[r5];
+        r6->unk2.hword[0] |= r4->unk4;
+        r5 = (r5 - 1) & 0xF;
+        r4 = &r7->unk20[r5];
+        r6->unk2.hword[0] |= r4->unk4 << 12;
+        r6->unk2.hword[1] |= r4->unk4 >> 4;
+        r5 = (r5 - 1) & 0xF;
+        r4 = &r7->unk20[r5];
+        r6->unk2.hword[1] |= r4->unk4 << 8;
+        r6->unk2.hword[2] |= r4->unk4 >> 8;
+        r5 = (r5 - 1) & 0xF;
+        r4 = &r7->unk20[r5];
+        r6->unk2.hword[2] |= r4->unk4 << 4;
+        r5 = (r5 - 1) & 0xF;
+        r4 = &r7->unk20[r5];
+        r6->unk2.hword[3] |= r4->unk4;
+        r5 = (r5 - 1) & 0xF;
+        r4 = &r7->unk20[r5];
+        r6->unk2.hword[3] |= r4->unk4 << 12;
+        r6->unk2.hword[4] |= r4->unk4 >> 4;
+        r5 = (r5 - 1) & 0xF;
+        r4 = &r7->unk20[r5];
+        r6->unk2.hword[4] |= r4->unk4 << 8;
+        r6->unk2.hword[5] |= r4->unk4 >> 8;
+        r5 = (r5 - 1) & 0xF;
+        r4 = &r7->unk20[r5];
+        r6->unk2.hword[5] |= r4->unk4 << 4;
+        r7->unk2AC = (r7->unk2AC + 1) & 0xF;
     }
 }
-*/

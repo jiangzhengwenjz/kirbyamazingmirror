@@ -474,8 +474,6 @@ struct Unk_08357260 {
     // ...
 };
 
-extern u32 gUnk_02020F20[];
-
 struct Unk_02022930_0 {
     u8 unk0;
     u8 unk1;
