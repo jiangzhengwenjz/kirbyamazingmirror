@@ -40,9 +40,8 @@ u32 sub_08030D4C(s32 sp)
              ip->unk2A8[r3] != ip->unk2A4[r3];
              ip->unk2A8[r3] = (ip->unk2A8[r3] - 1) & 0xF)
         {
-            if (sb == ip->unkA0[r3][ip->unk2A8[r3] * 2])
+            if (sb == ip->unkA0[r3][ip->unk2A8[r3]].unk0)
                 break;
-            
         }
         if (ip->unk2A8[r3] == ip->unk2A4[r3])
         {

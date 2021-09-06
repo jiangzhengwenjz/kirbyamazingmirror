@@ -4,16 +4,18 @@
 #include "global.h"
 #include "multi_08030C94.h"
 
+struct Unk_020382D0_sub {
+    u32 unk0;
+    u16 unk4;
+}; /* size = 0x8 */
+
 struct Unk_020382D0 {
     u32 unk0;
     u16 unk4;
     u8 unk6;
     u8 filler7[25];
-    struct Unk_020382D0_sub {
-        u32 unk0;
-        u16 unk4;
-    } unk20[0x10]; // unknown size
-    u32 unkA0[4][32]; // may be wrong type
+    struct Unk_020382D0_sub unk20[0x10];
+    struct Unk_020382D0_sub unkA0[4][0x10];
     u8 unk2A0[4];
     u8 unk2A4[4];
     u8 unk2A8[4];
