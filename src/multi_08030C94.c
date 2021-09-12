@@ -113,3 +113,217 @@ void sub_08030E44(void)
         r7->unk2AC = (r7->unk2AC + 1) & 0xF;
     }
 }
+
+u32 sub_08030FE0(void)
+{
+    u16 sb;
+    struct Unk_020382D0 *r8 = &gUnk_020382D0;
+    struct Unk_020382D0_sub *r6;
+    s8 sp00;
+    u32 sl;
+    u32 r4;
+    u32 r1;
+    u32 r7;
+
+    if (r8->unk4 & 1)
+    {
+        for (sb = 0; sb < gUnk_0203AD30; ++sb)
+        {
+            if (((volatile struct SioMultiCnt *)REG_ADDR_SIOCNT)->id == sb)
+            {
+                struct Unk_020382D0_sub *r5 = &r8->unk20[(r8->unk2AC - 1) & 0xF];
+
+                r4 = r8->unk2A4[sb];
+                r1 = (r4 - 1) & 0xF;
+                r6 = &r8->unkA0[sb][r1];
+                if (r6->unk0 != r5->unk0)
+                {
+                    r6 = &r8->unkA0[sb][r4];
+                    r6->unk0 = r5->unk0;
+                    r6->unk4 = r5->unk4;
+#ifdef NONMATCHING
+                    r8->unk2A4[sb] = (r8->unk2A4[sb] + 1) & 0xF;
+#else
+                    {
+                        register u32 r1 asm("r1");
+
+                        ++r8->unk2A4[sb];
+                        r1 = 0xF;
+                        r8->unk2A4[sb] &= r1;
+                    }
+#endif
+                }
+            }
+            else
+            {
+                struct MultiSioData *r5 = gMultiSioRecv + sb;
+                u32 r1 = (r8->unk2A4[sb] - 1) & 0xF;
+
+                sp00 = r5->unk10 - r8->unkA0[sb][r1].unk0;
+                r7 = (r8->unk2A4[sb] + sp00 - 1) & 0xF;
+                r6 = &r8->unkA0[sb][r7];
+                r6->unk0 = r5->unk10;
+                r6->unk4 = r5->unk2.hword[0];
+                // r7 = (r7 - 1) & 0xF;
+                --r7;
+                r4 = 0xF;
+                r7 &= r4;
+                r6 = &r8->unkA0[sb][r7];
+                r6->unk0 = r5->unk10 - 1;
+                r6->unk4 = r5->unk2.hword[0] >> 12;
+                r6->unk4 |= r5->unk2.hword[1] << 4;
+                r7 = (r7 - 1) & r4;
+                r6 = &r8->unkA0[sb][r7];
+                r6->unk0 = r5->unk10 - 2;
+                r6->unk4 = r5->unk2.hword[1] >> 8;
+                r6->unk4 |= r5->unk2.hword[2] << 8;
+                r7 = (r7 - 1) & r4;
+                r6 = &r8->unkA0[sb][r7];
+                r6->unk0 = r5->unk10 - 3;
+                r6->unk4 = r5->unk2.hword[2] >> 4;
+                r7 = (r7 - 1) & r4;
+                r6 = &r8->unkA0[sb][r7];
+                r6->unk0 = r5->unk10 - 4;
+                r6->unk4 = r5->unk2.hword[3];
+                r7 = (r7 - 1) & r4;
+                r6 = &r8->unkA0[sb][r7];
+                r6->unk0 = r5->unk10 - 5;
+                r6->unk4 = r5->unk2.hword[3] >> 12;
+                r6->unk4 |= r5->unk2.hword[4] << 4;
+                r7 = (r7 - 1) & r4;
+                r6 = &r8->unkA0[sb][r7];
+                r6->unk0 = r5->unk10 - 6;
+                r6->unk4 = r5->unk2.hword[4] >> 8;
+                r6->unk4 |= r5->unk2.hword[5] << 8;
+                r7 = (r7 - 1) & r4;
+                r6 = &r8->unkA0[sb][r7];
+                r6->unk0 = r5->unk10 - 7;
+                r6->unk4 = r5->unk2.hword[5] >> 4;
+                if (sp00 > 0)
+                    r8->unk2A4[sb] = (r8->unk2A4[sb] + sp00) & r4;
+#ifndef NONMATCHING
+                asm("":"=r"(r4));
+#endif
+                r7 = (r8->unk2A8[sb] - 1) & 0xF;
+                for (; r7 != r8->unk2A4[sb]; r7 = (r7 - 1) & 0xF)
+                {
+                    r6 = &r8->unkA0[sb][r7];
+                    r6->unk0 = 0xFFFF;
+                    r6->unk4 = 0xFFFF;
+                }
+#ifndef NONMATCHING
+                asm("":"=r"(r4));
+#endif
+                if (r8->unk4 & 2)
+                {
+                    if (r5->unk0 != 0x20)
+                    {
+                        r8->unk4 |= 0x8000;
+                        gUnk_02038580 = 3;
+                        return 0;
+                    }
+                    if (r8->unk6 != r5->unk1)
+                    {
+                        r8->unk4 |= 0x8000;
+                        gUnk_02038580 = 4;
+                        return 0;
+                    }
+                    if (r8->unkA0[sb][r8->unk2A8[sb]].unk4 == 0xFFFF)
+                    {
+                        r8->unk4 |= 0x8000;
+                        gUnk_02038580 = 6;
+                        return 0;
+                    }
+                }
+            }
+        }
+        if (r8->unk4 & 2)
+        {
+            bool32 sl;
+
+            r8->unk4 &= ~4;
+            sl = FALSE;
+            for (sb = 0; sb < gUnk_0203AD30; ++sb)
+            {
+                if (((volatile struct SioMultiCnt *)REG_ADDR_SIOCNT)->id != sb)
+                {
+                    u8 r0;
+                    s8 r1 = (r8->unkA0[sb][(r8->unk2A4[sb] - 1) & 0xF].unk0 - r8->unkA0[sb][r8->unk2A8[sb]].unk0);
+
+                    r0 = r8->unk2A0[sb];
+                    r1 = (s8)r0 - r1;
+                    r0 = r1 + 1;
+                    if (r0 <= 2) continue;
+                    if (r1 > 1)
+                    {
+                        sl = TRUE;
+                        break;
+                    }
+                }
+            }
+            if (sl)
+            {
+                r8->unk4 |= 4;
+                ++r8->unk2AD;
+            }
+            else
+            {
+                if (r8->unk2AD < 0)
+                    ++r8->unk2AD;
+                else
+                    r8->unk2AD = 0;
+            }
+        }
+        if (!(r8->unk4 & 4))
+        {
+            if (r8->unk4 & 2)
+            {
+                u32 sp04;
+
+                sp04 = 0xFFFF;
+                sl = 0;
+                for (sb = 0; sb < gUnk_0203AD30; ++sb)
+                {
+                    u16 r3;
+
+                    r3 = r8->unk8[0][sb];
+                    r7 = r8->unk2A8[sb];
+                    r6 = &r8->unkA0[sb][r7];
+                    r8->unk8[0][sb] = r6->unk4 & 0x3FF;
+                    r8->unk8[1][sb] = r8->unk8[0][sb] & ~r3;
+                    r8->unk8[2][sb] = r3 & ~r8->unk8[0][sb];
+                    sp04 &= r6->unk4 & 0xC00;
+                    sl |= r6->unk4 & 0xC00;
+                    r8->unk2A8[sb] = (r8->unk2A8[sb] + 1) & 0xF;
+                }
+                if (r8->unk4 & 8 && sp04 != sl)
+                {
+                    r8->unk4 |= 0x8000;
+                    gUnk_02038580 = 8;
+                    return 0;
+                }
+            }
+            else
+                goto _08031478;
+        }
+        if (r8->unk4 & 2)
+        {
+            if (r8->unk2AD > 0x10)
+            {
+                r8->unk4 |= 0x8000;
+                gUnk_02038580 = 7;
+                return 0;
+            }
+            if (r8->unk2A4[sb] == ((r8->unk2A8[sb] - 1) & 0xF))
+            {
+                r8->unk4 |= 0x8000;
+                gUnk_02038580 = 5;
+                return 0;
+            }
+        }
+    _08031478:
+        if (!(r8->unk4 & 4))
+            ++r8->unk0;
+    }
+    return 1;
+}

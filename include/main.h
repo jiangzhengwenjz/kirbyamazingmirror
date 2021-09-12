@@ -13,13 +13,14 @@ struct Unk_020382D0 {
     u32 unk0;
     u16 unk4;
     u8 unk6;
-    u8 filler7[25];
+    u16 unk8[3][4];
     struct Unk_020382D0_sub unk20[0x10];
     struct Unk_020382D0_sub unkA0[4][0x10];
     u8 unk2A0[4];
     u8 unk2A4[4];
     u8 unk2A8[4];
     u8 unk2AC;
+    s8 unk2AD;
 };
 
 struct Unk_030023F4 {
