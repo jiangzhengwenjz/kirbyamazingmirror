@@ -405,7 +405,7 @@ void sub_0803149C(void)
 s16 sub_080315B8(struct Multi_08030C94 *r8)
 {
     struct Unk_020382A0 *r0 = &gUnk_020382A0;
-    struct MultiSioData_0_0 *r1, *r5 = &gMultiSioSend.pat0;
+    struct MultiSioData_0_2 *r1, *r5 = &gMultiSioSend.pat2;
     s16 ret = 0;
     u16 i;
 
@@ -417,12 +417,12 @@ s16 sub_080315B8(struct Multi_08030C94 *r8)
         {
             r0->unk28 = i + 1;
             ++r0->unk29;
-            r5->hword[5] |= 1 << i;
+            r5->unkC |= 1 << i;
         }
         else if (MULTI_SIO_CONNECTED_ID(i) & gMultiSioStatusFlags)
         {
             r0->unk28 = i + 1;
-            r1 = &gMultiSioRecv[i].pat0;
+            r1 = &gMultiSioRecv[i].pat2;
             if (r1->unk0 == 2)
             {
                 if (r8->unk1C != r1->unk1)
@@ -435,7 +435,7 @@ s16 sub_080315B8(struct Multi_08030C94 *r8)
                     case 0x40:
                     case 0x41:
                         ++r0->unk29;
-                        r5->hword[5] |= 1 << i;
+                        r5->unkC |= 1 << i;
                     }
                 }
             }
@@ -479,7 +479,7 @@ s32 sub_0803169C(struct Multi_08030C94 *r4)
 s32 sub_08031764(struct Multi_08030C94 *r7)
 {
     struct Unk_020382A0 *r5 = &gUnk_020382A0;
-    struct MultiSioData_0_2 *r6 = &gMultiSioSend.pat2;
+    struct MultiSioData_0_2 *r1, *r6 = &gMultiSioSend.pat2;
     struct Unk_020382A0_sub *p;
     s32 result;
     u16 i;
@@ -507,33 +507,15 @@ s32 sub_08031764(struct Multi_08030C94 *r7)
         {
             for (i = 0; i < 4; ++i)
             {
-                p = r5->unk08;
+                p = gUnk_020382A0.unk08;
                 if (SIO_MULTI_CNT->id == i)
                 {
-                    struct Unk_020382A0_sub *s = &r6->unk4;
-                    struct Unk_020382A0_sub *d;
-
-#ifndef NONMATCHING
-                    asm("lsl\t%0, %1, #3\n"
-                        "\tadd\t%0, %0, %2":"=r"(d):"r"(i), "r"(p));
-#else
-                    d = &p[i];
-#endif
-                    CpuCopy16(s, d, sizeof(struct Unk_020382A0_sub));
+                    CpuCopy16(&r6->unk4, p+i, sizeof(struct Unk_020382A0_sub));
                 }
                 else
                 {
-                    struct MultiSioData_0_2 *r1 = &gMultiSioRecv[i].pat2;
-                    struct Unk_020382A0_sub *s = &r1->unk4;
-                    struct Unk_020382A0_sub *d;
-
-#ifndef NONMATCHING
-                    asm("lsl\t%0, %1, #3\n"
-                        "\tadd\t%0, %0, %2":"=r"(d):"r"(i), "r"(p));
-#else
-                    d = &p[i];
-#endif
-                    CpuCopy16(s, d, sizeof(struct Unk_020382A0_sub));
+                    r1 = &gMultiSioRecv[i].pat2;
+                    CpuCopy16(&r1->unk4, p+i, sizeof(struct Unk_020382A0_sub));
                 }
             }
             r7->func = sub_08031860;
