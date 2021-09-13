@@ -8,7 +8,12 @@
 #include "multi_sio.h"
 
 void sub_0803149C(void);
-u32 sub_0803169C(struct Multi_08030C94 *);
+s32 sub_0803169C(struct Multi_08030C94 *);
+s32 sub_08031764(struct Multi_08030C94 *);
+s32 sub_08031860(struct Multi_08030C94 *);
+s32 sub_080319F0(struct Multi_08030C94 *);
+
+#define SIO_MULTI_CNT ((volatile struct SioMultiCnt *)REG_ADDR_SIOCNT)
 
 void sub_08030C94(u8 r7, struct Unk_020382A0_sub *r6)
 {
@@ -62,7 +67,7 @@ void sub_08030E44(void)
     struct Unk_020382D0 *r7 = &gUnk_020382D0;
     u16 i, r5;
     struct Unk_020382D0_sub *r4;
-    struct MultiSioData *r6;
+    struct MultiSioData_0_0 *r6;
 
     if (r7->unk4 & 1 && !(r7->unk4 & 4))
     {
@@ -76,40 +81,40 @@ void sub_08030E44(void)
         }
         r4->unk0 = r7->unk0;
         r4->unk4 = (gInput & 0x3FF) | ((r5 << 10) & 0xC00);
-        r6 = &gMultiSioSend;
+        r6 = &gMultiSioSend.pat0;
         r6->unk0 = 0x20;
         r6->unk1 = gUnk_020382D0.unk6;
         r6->unk10 = r4->unk0;
         for (r5 = 0; r5 < 6; ++r5)
-            r6->unk2.hword[r5] = 0;
+            r6->hword[r5] = 0;
         r5 = r7->unk2AC;
         r4 = &r7->unk20[r5];
-        r6->unk2.hword[0] |= r4->unk4;
+        r6->hword[0] |= r4->unk4;
         r5 = (r5 - 1) & 0xF;
         r4 = &r7->unk20[r5];
-        r6->unk2.hword[0] |= r4->unk4 << 12;
-        r6->unk2.hword[1] |= r4->unk4 >> 4;
+        r6->hword[0] |= r4->unk4 << 12;
+        r6->hword[1] |= r4->unk4 >> 4;
         r5 = (r5 - 1) & 0xF;
         r4 = &r7->unk20[r5];
-        r6->unk2.hword[1] |= r4->unk4 << 8;
-        r6->unk2.hword[2] |= r4->unk4 >> 8;
+        r6->hword[1] |= r4->unk4 << 8;
+        r6->hword[2] |= r4->unk4 >> 8;
         r5 = (r5 - 1) & 0xF;
         r4 = &r7->unk20[r5];
-        r6->unk2.hword[2] |= r4->unk4 << 4;
+        r6->hword[2] |= r4->unk4 << 4;
         r5 = (r5 - 1) & 0xF;
         r4 = &r7->unk20[r5];
-        r6->unk2.hword[3] |= r4->unk4;
+        r6->hword[3] |= r4->unk4;
         r5 = (r5 - 1) & 0xF;
         r4 = &r7->unk20[r5];
-        r6->unk2.hword[3] |= r4->unk4 << 12;
-        r6->unk2.hword[4] |= r4->unk4 >> 4;
+        r6->hword[3] |= r4->unk4 << 12;
+        r6->hword[4] |= r4->unk4 >> 4;
         r5 = (r5 - 1) & 0xF;
         r4 = &r7->unk20[r5];
-        r6->unk2.hword[4] |= r4->unk4 << 8;
-        r6->unk2.hword[5] |= r4->unk4 >> 8;
+        r6->hword[4] |= r4->unk4 << 8;
+        r6->hword[5] |= r4->unk4 >> 8;
         r5 = (r5 - 1) & 0xF;
         r4 = &r7->unk20[r5];
-        r6->unk2.hword[5] |= r4->unk4 << 4;
+        r6->hword[5] |= r4->unk4 << 4;
         r7->unk2AC = (r7->unk2AC + 1) & 0xF;
     }
 }
@@ -129,7 +134,7 @@ u32 sub_08030FE0(void)
     {
         for (sb = 0; sb < gUnk_0203AD30; ++sb)
         {
-            if (((volatile struct SioMultiCnt *)REG_ADDR_SIOCNT)->id == sb)
+            if (SIO_MULTI_CNT->id == sb)
             {
                 struct Unk_020382D0_sub *r5 = &r8->unk20[(r8->unk2AC - 1) & 0xF];
 
@@ -156,56 +161,55 @@ u32 sub_08030FE0(void)
             }
             else
             {
-                struct MultiSioData *r5 = gMultiSioRecv + sb;
+                struct MultiSioData_0_0 *r5 = &gMultiSioRecv[sb].pat0;
                 u32 r1 = (r8->unk2A4[sb] - 1) & 0xF;
 
                 sp00 = r5->unk10 - r8->unkA0[sb][r1].unk0;
                 r7 = (r8->unk2A4[sb] + sp00 - 1) & 0xF;
                 r6 = &r8->unkA0[sb][r7];
                 r6->unk0 = r5->unk10;
-                r6->unk4 = r5->unk2.hword[0];
+                r6->unk4 = r5->hword[0];
                 // r7 = (r7 - 1) & 0xF;
                 --r7;
                 r4 = 0xF;
                 r7 &= r4;
                 r6 = &r8->unkA0[sb][r7];
                 r6->unk0 = r5->unk10 - 1;
-                r6->unk4 = r5->unk2.hword[0] >> 12;
-                r6->unk4 |= r5->unk2.hword[1] << 4;
+                r6->unk4 = r5->hword[0] >> 12;
+                r6->unk4 |= r5->hword[1] << 4;
                 r7 = (r7 - 1) & r4;
                 r6 = &r8->unkA0[sb][r7];
                 r6->unk0 = r5->unk10 - 2;
-                r6->unk4 = r5->unk2.hword[1] >> 8;
-                r6->unk4 |= r5->unk2.hword[2] << 8;
+                r6->unk4 = r5->hword[1] >> 8;
+                r6->unk4 |= r5->hword[2] << 8;
                 r7 = (r7 - 1) & r4;
                 r6 = &r8->unkA0[sb][r7];
                 r6->unk0 = r5->unk10 - 3;
-                r6->unk4 = r5->unk2.hword[2] >> 4;
+                r6->unk4 = r5->hword[2] >> 4;
                 r7 = (r7 - 1) & r4;
                 r6 = &r8->unkA0[sb][r7];
                 r6->unk0 = r5->unk10 - 4;
-                r6->unk4 = r5->unk2.hword[3];
+                r6->unk4 = r5->hword[3];
                 r7 = (r7 - 1) & r4;
                 r6 = &r8->unkA0[sb][r7];
                 r6->unk0 = r5->unk10 - 5;
-                r6->unk4 = r5->unk2.hword[3] >> 12;
-                r6->unk4 |= r5->unk2.hword[4] << 4;
+                r6->unk4 = r5->hword[3] >> 12;
+                r6->unk4 |= r5->hword[4] << 4;
                 r7 = (r7 - 1) & r4;
                 r6 = &r8->unkA0[sb][r7];
                 r6->unk0 = r5->unk10 - 6;
-                r6->unk4 = r5->unk2.hword[4] >> 8;
-                r6->unk4 |= r5->unk2.hword[5] << 8;
+                r6->unk4 = r5->hword[4] >> 8;
+                r6->unk4 |= r5->hword[5] << 8;
                 r7 = (r7 - 1) & r4;
                 r6 = &r8->unkA0[sb][r7];
                 r6->unk0 = r5->unk10 - 7;
-                r6->unk4 = r5->unk2.hword[5] >> 4;
+                r6->unk4 = r5->hword[5] >> 4;
                 if (sp00 > 0)
                     r8->unk2A4[sb] = (r8->unk2A4[sb] + sp00) & r4;
 #ifndef NONMATCHING
                 asm("":"=r"(r4));
 #endif
-                r7 = (r8->unk2A8[sb] - 1) & 0xF;
-                for (; r7 != r8->unk2A4[sb]; r7 = (r7 - 1) & 0xF)
+                for (r7 = (r8->unk2A8[sb] - 1) & 0xF; r7 != r8->unk2A4[sb]; r7 = (r7 - 1) & 0xF)
                 {
                     r6 = &r8->unkA0[sb][r7];
                     r6->unk0 = 0xFFFF;
@@ -245,7 +249,7 @@ u32 sub_08030FE0(void)
             sl = FALSE;
             for (sb = 0; sb < gUnk_0203AD30; ++sb)
             {
-                if (((volatile struct SioMultiCnt *)REG_ADDR_SIOCNT)->id != sb)
+                if (SIO_MULTI_CNT->id != sb)
                 {
                     u8 r0;
                     s8 r1 = (r8->unkA0[sb][(r8->unk2A4[sb] - 1) & 0xF].unk0 - r8->unkA0[sb][r8->unk2A8[sb]].unk0);
@@ -326,4 +330,215 @@ u32 sub_08030FE0(void)
             ++r8->unk0;
     }
     return 1;
+}
+
+void sub_0803149C(void)
+{
+    u16 i, *p;
+    struct Multi_08030C94 *r0, *r4 = TaskGetStructPtr(gCurTask, r0);
+    struct Unk_020382A0 *r5 = &gUnk_020382A0;
+
+    if (!r4->unkC)
+    {
+        if (gMultiSioStatusFlags & MULTI_SIO_HARD_ERROR)
+        {
+            r5->unk04 = -2;
+            r5->unk06 &= ~3;
+            r5->unk06 &= ~4;
+            r4->unkC = 1;
+            return;
+        }
+        else if (gMultiSioStatusFlags & MULTI_SIO_ID_OVER_ERROR)
+        {
+            r5->unk04 = -3;
+            r5->unk06 &= ~4;
+            r4->unkC = 1;
+            return;
+        }
+        else if (!(gMultiSioStatusFlags
+            & (MULTI_SIO_CONNECTED_ID0 | MULTI_SIO_CONNECTED_ID1
+                | MULTI_SIO_CONNECTED_ID2 | MULTI_SIO_CONNECTED_ID3)))
+        {
+            if (r4->unk18 > 8)
+            {
+                r5->unk04 = -1;
+                r5->unk06 &= ~3;
+                r5->unk06 &= ~4;
+                r4->unkC = 1;
+                return;
+            }
+            else
+                ++r4->unk18;
+        }
+        else
+            r4->unk18 = 0;
+        for (i = 0; i < 4; ++i)
+        {
+            p = r4->unk10;
+            if ((MULTI_SIO_CONNECTED_ID(i) & gMultiSioStatusFlags)
+                && !(MULTI_SIO_RECV_ID(i) & gMultiSioStatusFlags))
+            {
+                u16 *d = &p[i];
+
+                if (*d > 10)
+                {
+                    r5->unk04 = -4;
+                    r5->unk06 &= ~4;
+                    r4->unkC = 1;
+                    return;
+                }
+                else
+                    ++*d;
+            }
+            else
+            {
+                u16 *d = &p[i];
+
+                *d = 0;
+            }
+        }
+        r5->unk04 = r4->func(r4);
+        r5->unk06 &= ~4;
+    }
+}
+
+s16 sub_080315B8(struct Multi_08030C94 *r8)
+{
+    struct Unk_020382A0 *r0 = &gUnk_020382A0;
+    struct MultiSioData_0_0 *r1, *r5 = &gMultiSioSend.pat0;
+    s16 ret = 0;
+    u16 i;
+
+    r0->unk28 = 0;
+    r0->unk29 = 0;
+    for (i = 0; i < 4; ++i)
+    {
+        if (SIO_MULTI_CNT->id == i)
+        {
+            r0->unk28 = i + 1;
+            ++r0->unk29;
+            r5->hword[5] |= 1 << i;
+        }
+        else if (MULTI_SIO_CONNECTED_ID(i) & gMultiSioStatusFlags)
+        {
+            r0->unk28 = i + 1;
+            r1 = &gMultiSioRecv[i].pat0;
+            if (r1->unk0 == 2)
+            {
+                if (r8->unk1C != r1->unk1)
+                    ret = -5;
+                else
+                {
+                    switch (r1->unkE)
+                    {
+                    case 0x20:
+                    case 0x40:
+                    case 0x41:
+                        ++r0->unk29;
+                        r5->hword[5] |= 1 << i;
+                    }
+                }
+            }
+        }
+        else if (!(MULTI_SIO_RECV_ID(i) & gMultiSioStatusFlags))
+            ((vu16 *)REG_ADDR_SIOMULTI0)[i];
+
+    }
+    return ret;
+}
+
+s32 sub_0803169C(struct Multi_08030C94 *r4)
+{
+    struct Unk_020382A0 *r6 = &gUnk_020382A0;
+    struct MultiSioData_0_2 *r1 = &gMultiSioSend.pat2;
+
+    r1->unk0 = 2;
+    r1->unk1 = r4->unk1C;
+    r1->unk2 = 0x123;
+    r1->unkE = 0;
+    r1->unkC = 0;
+    CpuCopy16(&r4->unk4, &r1->unk4, sizeof(struct Unk_020382A0_sub));
+    r6->unk06 &= ~3;
+    if (SIO_MULTI_CNT->id == 0
+        && gMultiSioStatusFlags & MULTI_SIO_PARENT
+        && MULTI_SIO_RECV_ID(SIO_MULTI_CNT->id) & gMultiSioStatusFlags)
+    {
+        r6->unk06 |= 1;
+        r4->func = sub_08031764;
+    }
+    else if (SIO_MULTI_CNT->id != 0
+        && !(gMultiSioStatusFlags & MULTI_SIO_PARENT)
+        && MULTI_SIO_RECV_ID(SIO_MULTI_CNT->id) & gMultiSioStatusFlags)
+    {
+        r6->unk06 |= 2;
+        r4->func = sub_080319F0;
+    }
+    return 0;
+}
+
+s32 sub_08031764(struct Multi_08030C94 *r7)
+{
+    struct Unk_020382A0 *r5 = &gUnk_020382A0;
+    struct MultiSioData_0_2 *r6 = &gMultiSioSend.pat2;
+    struct Unk_020382A0_sub *p;
+    s32 result;
+    u16 i;
+
+    r6->unk0 = 2;
+    r6->unk1 = r7->unk1C;
+    r6->unk2 = 0x123;
+    r6->unkE = 0x20;
+    r6->unkC = 1;
+    if (SIO_MULTI_CNT->id != 0
+        || !(gMultiSioStatusFlags & MULTI_SIO_PARENT)
+        || !(MULTI_SIO_RECV_ID(SIO_MULTI_CNT->id) & gMultiSioStatusFlags))
+    {
+        r5->unk06 &= ~3;
+        r7->func = sub_0803169C;
+        return -1;
+    }
+    else if ((result = sub_080315B8(r7)))
+    {
+        return result;
+    }
+    else if (r5->unk28 == r5->unk29 && r5->unk28 > 1)
+    {
+        if (r5->unk06 & 4)
+        {
+            for (i = 0; i < 4; ++i)
+            {
+                p = r5->unk08;
+                if (SIO_MULTI_CNT->id == i)
+                {
+                    struct Unk_020382A0_sub *s = &r6->unk4;
+                    struct Unk_020382A0_sub *d;
+
+#ifndef NONMATCHING
+                    asm("lsl\t%0, %1, #3\n"
+                        "\tadd\t%0, %0, %2":"=r"(d):"r"(i), "r"(p));
+#else
+                    d = &p[i];
+#endif
+                    CpuCopy16(s, d, sizeof(struct Unk_020382A0_sub));
+                }
+                else
+                {
+                    struct MultiSioData_0_2 *r1 = &gMultiSioRecv[i].pat2;
+                    struct Unk_020382A0_sub *s = &r1->unk4;
+                    struct Unk_020382A0_sub *d;
+
+#ifndef NONMATCHING
+                    asm("lsl\t%0, %1, #3\n"
+                        "\tadd\t%0, %0, %2":"=r"(d):"r"(i), "r"(p));
+#else
+                    d = &p[i];
+#endif
+                    CpuCopy16(s, d, sizeof(struct Unk_020382A0_sub));
+                }
+            }
+            r7->func = sub_08031860;
+        }
+        return 1;
+    }
+    return 0;
 }

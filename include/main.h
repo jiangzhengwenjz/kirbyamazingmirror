@@ -67,17 +67,36 @@ struct Unk_03006CB0 {
     u8 unk8;
 };
 
-union __attribute__((packed, aligned(2))) MultiSioData_2 {
-    u16 hword[6];
-    u8 byte[12];
-};
-
-struct MultiSioData {
+struct MultiSioData_0_0 {
     u8 unk0;
     u8 unk1;
-    union MultiSioData_2 unk2;
+    u16 hword[6];
     u8 unkE;
     u32 unk10;
+};
+
+struct MultiSioData_0_1 {
+    u8 unk0;
+    u8 unk1;
+    u8 byte[12];
+    u8 unkE;
+    u32 unk10;
+};
+
+struct MultiSioData_0_2 {
+    u8 unk0;
+    u8 unk1;
+    u16 unk2;
+    struct Unk_020382A0_sub unk4;
+    u16 unkC;
+    u8 unkE;
+    u32 unk10;
+};
+
+union MultiSioData {
+    struct MultiSioData_0_0 pat0;
+    struct MultiSioData_0_1 pat1;
+    struct MultiSioData_0_2 pat2;
 }; /* size = MULTI_SIO_BLOCK_SIZE */
 
 extern struct Unk_020382D0 gUnk_020382D0;
@@ -91,7 +110,7 @@ extern u16 gUnk_03002480;
 extern u8* gUnk_03002484;
 extern u16 gUnk_03002488;
 extern u8 gUnk_0300248C;
-extern struct MultiSioData gMultiSioRecv[4];
+extern union MultiSioData gMultiSioRecv[4];
 extern u32 gUnk_030024E0;
 extern u8 gUnk_030024E4;
 extern struct BlendRegs gBldRegs;
@@ -127,7 +146,7 @@ extern s16 gUnk_0300367C;
 extern u16 gBgScrollRegs[8];
 extern u16 gDispCnt;
 extern u8 gUnk_030036A0[];
-extern struct MultiSioData gMultiSioSend;
+extern union MultiSioData gMultiSioSend;
 extern u8 gUnk_030036C4;
 extern u32 gUnk_030036C8;
 extern u8 gUnk_03003790;

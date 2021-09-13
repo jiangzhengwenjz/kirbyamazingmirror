@@ -7,7 +7,8 @@
 struct Unk_020382A0
 {
     struct Task *task;
-    u16 unk04;
+    s16 unk04;
+    u16 unk06;
     struct Unk_020382A0_sub
     {
         u32 unk00;
@@ -15,15 +16,17 @@ struct Unk_020382A0
         u8 filler[3]; // must be here for matching
     } unk08[4]; // TODO: how many elements? 
     u8 unk28;
+    u8 unk29;
 }; /* size = 0x2C */
 
 struct Multi_08030C94
 {
-    u32 (*func)(struct Multi_08030C94 *);
+    s32 (*func)(struct Multi_08030C94 *);
     struct Unk_020382A0_sub unk4;
-    u16 fillerC;
-    u16 unkE;
-    u8 filler10[12];
+    u32 unkC;
+    u16 unk10[4];
+    u16 unk18;
+    u16 filler1A;
     u8 unk1C;
     u8 filler1D[3];
 }; /* size = 0x20 */
