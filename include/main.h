@@ -87,7 +87,7 @@ struct MultiSioData_0_2 {
     u8 unk0;
     u8 unk1;
     u16 unk2;
-    struct Unk_020382A0_sub unk4;
+    union Unk_020382A0_8 unk4;
     u16 unkC;
     u8 unkE;
     u32 unk10;

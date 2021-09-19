@@ -12,10 +12,20 @@ s32 sub_0803169C(struct Multi_08030C94 *);
 s32 sub_08031764(struct Multi_08030C94 *);
 s32 sub_08031860(struct Multi_08030C94 *);
 s32 sub_080319F0(struct Multi_08030C94 *);
+s32 sub_08031AA8(struct Multi_08030C94 *);
+s32 sub_08031BB0(struct Multi_08030C94 *);
+s32 sub_08031D00(struct Multi_08030C94 *);
+void sub_08031DF0(void);
+void sub_08032024(void);
+void sub_08032BEC(void);
+void sub_08032C3C(void);
+void sub_08032DA4(void);
+void sub_08032E98(void);
+void nullsub_118(void);
 
 #define SIO_MULTI_CNT ((volatile struct SioMultiCnt *)REG_ADDR_SIOCNT)
 
-void sub_08030C94(u8 r7, struct Unk_020382A0_sub *r6)
+void sub_08030C94(u8 r7, union Unk_020382A0_8 *r6)
 {
     struct Multi_08030C94 *r4;
 
@@ -30,7 +40,7 @@ void sub_08030C94(u8 r7, struct Unk_020382A0_sub *r6)
     r4->func = sub_0803169C;
     r4->unk1C = r7;
     if (r6)
-        CpuCopy16(r6, &r4->unk4, sizeof(struct Unk_020382A0_sub));
+        CpuCopy16(r6, &r4->unk4, sizeof(union Unk_020382A0_8));
 }
 
 u32 sub_08030D4C(s32 sp)
@@ -436,13 +446,13 @@ s16 sub_080315B8(struct Multi_08030C94 *r8)
                     case 0x41:
                         ++r0->unk29;
                         r5->unkC |= 1 << i;
+                        break;
                     }
                 }
             }
         }
         else if (!(MULTI_SIO_RECV_ID(i) & gMultiSioStatusFlags))
             ((vu16 *)REG_ADDR_SIOMULTI0)[i];
-
     }
     return ret;
 }
@@ -457,7 +467,7 @@ s32 sub_0803169C(struct Multi_08030C94 *r4)
     r1->unk2 = 0x123;
     r1->unkE = 0;
     r1->unkC = 0;
-    CpuCopy16(&r4->unk4, &r1->unk4, sizeof(struct Unk_020382A0_sub));
+    CpuCopy16(&r4->unk4, &r1->unk4, sizeof(union Unk_020382A0_8));
     r6->unk06 &= ~3;
     if (SIO_MULTI_CNT->id == 0
         && gMultiSioStatusFlags & MULTI_SIO_PARENT
@@ -480,7 +490,7 @@ s32 sub_08031764(struct Multi_08030C94 *r7)
 {
     struct Unk_020382A0 *r5 = &gUnk_020382A0;
     struct MultiSioData_0_2 *r1, *r6 = &gMultiSioSend.pat2;
-    struct Unk_020382A0_sub *p;
+    union Unk_020382A0_8 *p;
     s32 result;
     u16 i;
 
@@ -510,12 +520,12 @@ s32 sub_08031764(struct Multi_08030C94 *r7)
                 p = gUnk_020382A0.unk08;
                 if (SIO_MULTI_CNT->id == i)
                 {
-                    CpuCopy16(&r6->unk4, p+i, sizeof(struct Unk_020382A0_sub));
+                    CpuCopy16(&r6->unk4, p+i, sizeof(union Unk_020382A0_8));
                 }
                 else
                 {
                     r1 = &gMultiSioRecv[i].pat2;
-                    CpuCopy16(&r1->unk4, p+i, sizeof(struct Unk_020382A0_sub));
+                    CpuCopy16(&r1->unk4, p+i, sizeof(union Unk_020382A0_8));
                 }
             }
             r7->func = sub_08031860;
@@ -523,4 +533,435 @@ s32 sub_08031764(struct Multi_08030C94 *r7)
         return 1;
     }
     return 0;
+}
+
+s32 sub_08031860(struct Multi_08030C94 *r6)
+{
+    u16 i;
+    struct Unk_020382A0 *r5 = &gUnk_020382A0;
+    struct MultiSioData_0_2 *r1, *r4 = &gMultiSioSend.pat2;
+    s16 sp00;
+
+    r4->unk0 = 2;
+    r4->unk1 = r6->unk1C;
+    r4->unk2 = 0x123;
+    r4->unkE = 0x22;
+    r4->unkC |= 1;
+    if (SIO_MULTI_CNT->id != 0
+        || !(gMultiSioStatusFlags & MULTI_SIO_PARENT)
+        || !(MULTI_SIO_RECV_ID(SIO_MULTI_CNT->id) & gMultiSioStatusFlags))
+    {
+        r5->unk06 &= ~3;
+        r6->func = sub_0803169C;
+        return -1;
+    }
+    sp00 = 0;
+    for (i = 0; i < r5->unk28; ++i)
+    {
+        if (SIO_MULTI_CNT->id == i)
+        {
+            r4->unkC |= 1 << i;
+            r4->unkC |= 0x10 << i;
+        }
+        else if (MULTI_SIO_CONNECTED_ID(i) & gMultiSioStatusFlags)
+        {
+            r1 = &gMultiSioRecv[i].pat2;
+            if (r1->unk0 == 2)
+            {
+                if (r6->unk1C != r1->unk1)
+                    sp00 = -5;
+                else if (r1->unk2 != 0x123)
+                    sp00 = -6;
+                else
+                {
+                    switch (r1->unkE)
+                    {
+                    case 0x40:
+                    case 0x41:
+                        r4->unkC |= 1 << i;
+                        break;
+                    case 0x42:
+                        r4->unkC |= 1 << i;
+                        r4->unkC |= 0x10 << i;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    if (sp00) return sp00;
+    for (i = 0; i < r5->unk28; ++i)
+    {
+        if (!(r4->unkC & (0x10 << i)))
+            break;
+    }
+    if (i != r5->unk28)
+        return 1;
+    else
+    {
+        r6->func = sub_08031D00;
+        return 2;
+    }
+}
+
+s32 sub_080319F0(struct Multi_08030C94 *r4)
+{
+    struct Unk_020382A0 *r3 = &gUnk_020382A0;
+    struct MultiSioData_0_2 *r1 = &gMultiSioSend.pat2, *r6 = &gMultiSioRecv[0].pat2;
+    s32 ret;
+
+    r1->unk0 = 2;
+    r1->unk1 = r4->unk1C;
+    r1->unk2 = 0x123;
+    r1->unkE = 0x40;
+    r1->unkC = 0;
+    if (SIO_MULTI_CNT->id == 0
+        || gMultiSioStatusFlags & MULTI_SIO_PARENT
+        || !(MULTI_SIO_RECV_ID(SIO_MULTI_CNT->id) & gMultiSioStatusFlags))
+    {
+        r3->unk06 &= ~3;
+        r4->func = sub_0803169C;
+        return -1;
+    }
+    if (r6->unk0 == 2)
+    {
+        ret = sub_080315B8(r4);
+        if (ret) return ret;
+        if (r6->unkE == 0x20 && (r6->unkC >> SIO_MULTI_CNT->id) & 1)
+            r4->func = sub_08031AA8;
+    }
+    return 0;
+}
+
+s32 sub_08031AA8(struct Multi_08030C94 *r8)
+{
+    u16 i;
+    struct Unk_020382A0 *r5 = &gUnk_020382A0;
+    struct MultiSioData_0_2 *r1, *r6 = &gMultiSioSend.pat2, *r7 = &gMultiSioRecv[0].pat2;
+    union Unk_020382A0_8 *p;
+    s32 res;
+
+    r6->unk0 = 2;
+    r6->unk1 = r8->unk1C;
+    r6->unk2 = 0x123;
+    r6->unkE = 0x41;
+    r6->unkC = 0;
+    if (SIO_MULTI_CNT->id == 0
+        || gMultiSioStatusFlags & MULTI_SIO_PARENT
+        || !((MULTI_SIO_RECV_ID(SIO_MULTI_CNT->id) & gMultiSioStatusFlags)))
+    {
+        r5->unk06 &= ~3;
+        r8->func = sub_0803169C;
+        return -1;
+    }
+    else if (r7->unk0 != 2)
+        return -1;
+    else
+    {
+        res = sub_080315B8(r8);
+        if (res) return res;
+        if (r7->unkE == 0x22)
+        {
+            for (i = 0; i < 4; ++i)
+            {
+                p = gUnk_020382A0.unk08;
+                if (SIO_MULTI_CNT->id == i)
+                {
+                    CpuCopy16(&r6->unk4, p+i, sizeof(union Unk_020382A0_8));
+                }
+                else
+                {
+                    r7 = &gMultiSioRecv[i].pat2;
+                    CpuCopy16(&r7->unk4, p+i, sizeof(union Unk_020382A0_8));
+                }
+            }
+            r8->func = sub_08031BB0;
+            r8->unk1A = 2;
+            r6->unkE = 0x42;
+        }
+    }
+    return 0;
+}
+
+s32 sub_08031BB0(struct Multi_08030C94 *r1)
+{
+    struct MultiSioData_0_2 *r2 = &gMultiSioSend.pat2;
+
+    if (r1->unk1A)
+    {
+        --r1->unk1A;
+        r2->unk0 = 2;
+        r2->unk1 = r1->unk1C;
+        r2->unk2 = 0x123;
+        r2->unkE = 0x41;
+        return 0;
+    }
+    else
+    {
+        r1->unkC = 1;
+        r2->unk0 = 2;
+        r2->unk1 = r1->unk1C;
+        r2->unk2 = 0x123;
+        r2->unkE = 0x42;
+        return 2;
+    }
+}
+
+void sub_08031BFC(void)
+{
+    gUnk_02038580 = 0;
+    CpuFill16(0, &gUnk_020382D0, sizeof(gUnk_020382D0));
+    CpuFill16(0, &gUnk_020382A0, sizeof(gUnk_020382A0));
+}
+
+void sub_08031C3C(void)
+{
+    TaskDestroy(gUnk_020382A0.task);
+    gUnk_020382A0.task = NULL;
+}
+
+void sub_08031C54(void)
+{
+    gUnk_020382A0.unk06 |= 4;
+}
+
+s16 sub_08031C64(void)
+{
+    return gUnk_020382A0.unk04;
+}
+
+void sub_08031C70(u8 r5)
+{
+    CpuFill32(0, gMultiSioRecv, sizeof(gMultiSioRecv));
+    CpuFill32(0, &gMultiSioSend, sizeof(gMultiSioSend));
+    CpuFill16(0, &gUnk_020382D0, sizeof(gUnk_020382D0));
+    gUnk_020382D0.unk4 = 0;
+    gUnk_020382D0.unk6 = r5;
+}
+
+void sub_08031CC8(void)
+{
+    gUnk_020382D0.unk4 = 0;
+}
+
+void sub_08031CD4(void)
+{
+    gUnk_020382D0.unk4 |= 1;
+}
+
+void sub_08031CE4(u8 r0)
+{
+    gUnk_020382D0.unk2AD -= r0;
+}
+
+s32 sub_08031D00(struct Multi_08030C94 *r0)
+{
+    struct MultiSioData_0_2 *r2 = &gMultiSioSend.pat2;
+
+    r0->unkC = 1;
+    r2->unk0 = 2;
+    r2->unk1 = r0->unk1C;
+    r2->unk2 = 0x123;
+    r2->unkE = 0x22;
+    return 2;
+}
+
+void sub_08031D24(void)
+{
+    struct Multi_08032B0C *r6;
+
+    sub_081589E8();
+    TaskGetStructPtr(gCurTask, r6);
+    r6->unk20 = 0;
+    REG_RCNT = 0;
+    CpuFill16(0, &gMultiBootParam, sizeof(gMultiBootParam));
+    CpuFill16(0, &gMultiBootStruct, sizeof(gMultiBootStruct));
+    CpuFill16(0, &gMultiBootDataRecv, sizeof(gMultiBootDataRecv));
+    gUnk_0300050C = -1;
+    gUnk_03000480 = 0;
+    sub_0803024C();
+    MultiBootInitWithParams((void *)0, (void *)0x100); // ?
+    r6->unk54 = gMultiBootStruct.unk06;
+    r6->unk56 = gMultiBootStruct.unk08;
+    r6->unk58 = 0;
+    gCurTask->main = sub_08031DF0;
+}
+
+void sub_08031DF0(void)
+{
+    struct Multi_08032B0C *r0, *r4 = TaskGetStructPtr(gCurTask, r0);
+
+    r4->unkE = 0;
+    if (r4->unkC & 2)
+    {
+        sub_08030B38();
+        r4->unkE = 7;
+        gCurTask->main = nullsub_118;
+    }
+    else
+    {
+        sub_08030C40(1);
+        if (gMultiBootStruct.unk01 > 1 && gMultiBootStruct.unk02 == 3 && gUnk_0300050C == 1)
+        {
+            r4->unk10 = gMultiBootStruct.unk00;
+            r4->unk11 = gMultiBootStruct.unk01;
+            gUnk_0203AD3C = gMultiBootStruct.unk00;
+            gUnk_0203AD30 = gMultiBootStruct.unk01;
+            sub_08030B38();
+            gCurTask->main = sub_08032BEC;
+        }
+        else
+        {
+            if (r4->unk54 != gMultiBootStruct.unk06
+                || r4->unk56 != gMultiBootStruct.unk08)
+            {
+                r4->unk54 = gMultiBootStruct.unk06;
+                r4->unk56 = gMultiBootStruct.unk08;
+                r4->unk58 = 0;
+            }
+            else
+            {
+                if (r4->unk58 > 180)
+                {
+                    sub_08030B38();
+                    r4->unk10 = 0;
+                    r4->unk11 = 0;
+                    gCurTask->main = sub_08031D24;
+                    return;
+                }
+                ++r4->unk58;
+            }
+            if (gMultiBootStruct.unk03 & 1)
+            {
+                sub_08030B38();
+                r4->unkE = 8;
+                gCurTask->main = nullsub_118;
+            }
+            else if (!gMultiBootStruct.unk03)
+            {
+                r4->unk10 = gMultiBootStruct.unk00;
+                r4->unk11 = gMultiBootStruct.unk01;
+                if (r4->unk11 < 2) r4->unk11 = 0;
+                if (!gMultiBootStruct.unk00 && gUnk_0300050C == 1)
+                {
+                    if (gMultiBootStruct.unk02 == 2)
+                    {
+                        if (r4->unk20 > 90)
+                        {
+                            r4->unkE = 1;
+                            if (r4->unkC & 1)
+                            {
+                                sub_08030C1C();
+                                r4->unkC &= ~1;
+                            }
+                        }
+                        else
+                            ++r4->unk20;
+                    }
+                    else
+                        r4->unk20 = 0;
+                }
+                else if (gUnk_0300050C == 2)
+                {
+                    r4->unk10 = 0;
+                    r4->unk11 = 0;
+                    sub_08030B38();
+                    r4->unkE = 8;
+                    gCurTask->main = nullsub_118;
+                }
+            }
+            else
+            {
+                sub_08030B38();
+                r4->unk10 = 0;
+                r4->unk11 = 0;
+                gCurTask->main = sub_08031D24;
+            }
+        }
+    }
+}
+
+void sub_08031FAC(void)
+{
+    union Unk_020382A0_8 sp00;
+    struct Multi_08032B0C *r1 = TaskGetStructPtr(gCurTask, r1);
+
+    r1->unk20 = 0;
+    sp00.pat1.unk00 = gUnk_0203ACB0[gUnk_0203AD48 < 3 ? gUnk_0203AD48 : 0]; 
+    sp00.pat1.unk02 = gUnk_0203ADE0;
+    sub_08030C94(1, &sp00);
+    gCurTask->main = sub_08032024;
+}
+
+void sub_08032024(void)
+{
+    struct Multi_08032B0C *r4, *r8 = TaskGetStructPtr(gCurTask, r4);
+    s32 r0;
+    u16 i;
+
+    if (--r8->unk1E == -1)
+    {
+        TaskDestroy(gCurTask);
+        gUnk_02038580 = 0;
+        sub_08032E98();
+    }
+    else if ((r0 = sub_08031C64()) == 2)
+    {
+        if (gUnk_0203AD30 == gUnk_020382A0.unk28)
+        {
+            for (i = 0; i < gUnk_0203AD30; ++i)
+            {
+                u16 *r4 = r8->unk4; // useless variable for easy-matching
+                union Unk_020382A0_8 *r7 = gUnk_020382A0.unk08;
+
+                r8->unk4[i] = r7[i].pat1.unk00;
+                gUnk_0203AD1C[i] = r7[i].pat1.unk02;
+                r4 = r8->unk4; // dummy
+            }
+            for (; i < 4; ++i)
+            {
+                r8->unk4[i] = 0xFFFF;
+                gUnk_0203AD1C[i] = 0xFF;
+            }
+            sub_08031C3C();
+            gCurTask->main = sub_08032C3C;
+        }
+        else
+        {
+            TaskDestroy(gCurTask);
+            gUnk_02038580 = 0;
+            sub_08032E98();
+        }
+    }
+    else if (r0 == 1)
+    {
+        if (r8->unk20++ > 8)
+            sub_08031C54();
+    }
+    else if (r0 < 0)
+    {
+        sub_08031C3C();
+        gCurTask->main = sub_08031FAC;
+    }
+    else
+        r8->unk20 = 0;
+}
+
+void sub_08032164(void)
+{
+    u16 i;
+    struct Multi_08032B0C *r1;
+
+    TaskGetStructPtr(gCurTask, r1);
+    r1->unk16 = 0;
+    r1->unk18 = 0;
+    for (i = 0; i < 4; ++i)
+    {
+        r1->unk22[0][i] = 0;
+        r1->unk22[1][i] = 0;
+        r1->unk22[2][i] = 0;
+    }
+    sub_08031C70(2);
+    sub_08031CD4();
+    gCurTask->main = sub_08032DA4;
 }

@@ -520,10 +520,10 @@ static void sub_0801A374(struct Multi_08019F28 *r5)
                 for (r3 = 0; r3 < gUnk_0203AD30; ++r3)
                 {
                     struct Multi_08019F28_sub *p0 = &r5->unk84;
-                    struct Unk_020382A0_sub *p = gUnk_020382A0.unk08;
+                    union Unk_020382A0_8 *p = gUnk_020382A0.unk08;
 
-                    p0->unk00[r3] = p[r3].unk00;
-                    gUnk_0203AD1C[r3] = p[r3].unk04;
+                    p0->unk00[r3] = p[r3].pat0.unk00;
+                    gUnk_0203AD1C[r3] = p[r3].pat0.unk04;
                 }
                 for (; r3 < 4; ++r3)
                     gUnk_0203AD1C[r3] |= 0xFF;
@@ -809,11 +809,11 @@ static void sub_0801A950(struct Multi_08019F28 *r4)
 
 static void sub_0801A970(struct Multi_08019F28 *r4)
 {
-    struct Unk_020382A0_sub stru;
+    union Unk_020382A0_8 stru;
 
     r4->unk9C = 0;
-    stru.unk00 = Rand32();
-    stru.unk04 = gUnk_0203ADE0;
+    stru.pat0.unk00 = Rand32();
+    stru.pat0.unk04 = gUnk_0203ADE0;
     sub_08030C94(1, &stru);
     r4->callback = sub_0801A374;
 }
